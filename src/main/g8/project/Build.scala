@@ -36,7 +36,7 @@ object Build extends sbt.Build {
         Tests.Filter { _.contains(".unit.") }
       ),
       parallelExecution in Test := false,
-      credentials += Credentials("Artifactory Realm", "build01.tl.com", "jenkins", "tlbuild"),
+      credentials += Credentials("Artifactory Realm", "build01.tl.com", "$artifactory_user$", "$artifactory_password$"),
       publishTo <<= (version) {
         version: String =>
           val repo = "http://build01.tl.com:8081/artifactory/"
@@ -44,7 +44,7 @@ object Build extends sbt.Build {
           else if (version.trim endsWith "RC") Some("TrafficLand Release Candidates" at (repo + "com.trafficland.releasecandidates"))
           else Some("TrafficLand Releases" at (repo + "com.trafficland.final"))
       },
-      fullRunTask(runWorker, Runtime, "vqm.Runner"),
+      fullRunTask(runWorker, Runtime, "$name$.Runner"),
       fork in runWorker := true,
       javaOptions in runWorker += "-Dconfig.file=conf/worker.conf",
       fullRunTask(runSupervisor, Runtime, "$name$.Runner"),
