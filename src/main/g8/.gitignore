@@ -1,0 +1,47 @@
+# use glob syntax.
+syntax: glob
+
+# misc files
+*.log
+.cache
+.DS_Store
+Thumbs.db
+
+# building
+out
+ij-out
+ant-out
+
+# sbt
+target
+lib_managed
+src_managed
+target
+test-results
+dist
+
+
+# IntelliJ
+*.iws
+*.iml
+.idea
+atlassian-ide-plugin.xml
+
+
+# vim
+*.swp
+
+# eclipse
+.project
+.classpath
+.metadata
+.target
+.scala_dependencies
+.settings/
+bin/
+
+# gradle
+.gradle/
+**taskArtifacts/
+build/
+

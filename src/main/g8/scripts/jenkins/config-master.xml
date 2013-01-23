@@ -1,0 +1,77 @@
+<project>
+  <actions/>
+  <description/>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty>
+      <projectUrl>https://github.com/trafficland/$name$/</projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>origin</name>
+        <refspec>+refs/heads/*:refs/remotes/origin/*</refspec>
+        <url>ssh://git@github.com/trafficland/$name$.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <recursiveSubmodules>false</recursiveSubmodules>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <authorOrCommitter>false</authorOrCommitter>
+    <clean>false</clean>
+    <wipeOutWorkspace>false</wipeOutWorkspace>
+    <pruneBranches>false</pruneBranches>
+    <remotePoll>false</remotePoll>
+    <buildChooser class="hudson.plugins.git.util.DefaultBuildChooser"/>
+    <gitTool>Default</gitTool>
+    <submoduleCfg class="list"/>
+    <relativeTargetDir/>
+    <excludedRegions/>
+    <excludedUsers/>
+    <gitConfigName/>
+    <gitConfigEmail/>
+    <skipTag>false</skipTag>
+    <scmName/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <authToken>$token$</authToken>
+  <triggers class="vector">
+    <com.cloudbees.jenkins.GitHubPushTrigger>
+      <spec/>
+    </com.cloudbees.jenkins.GitHubPushTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <org.jvnet.hudson.plugins.SbtPluginBuilder>
+      <name>Version Independent (Relative WorkSpace Path)</name>
+      <jvmFlags>-Xmx512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=1G</jvmFlags>
+      <sbtFlags>-Dsbt.log.noformat=true</sbtFlags>
+      <actions>clean update compile test dist</actions>
+      <subdirPath/>
+    </org.jvnet.hudson.plugins.SbtPluginBuilder>
+  </builders>
+  <publishers>
+  <org.tap4j.plugin.TapPublisher>
+    <testResults>*/test.tap</testResults>
+    <failIfNoResults>true</failIfNoResults>
+    <failedTestsMarkBuildAsFailure>true</failedTestsMarkBuildAsFailure>
+    <outputTapToConsole>true</outputTapToConsole>
+  </org.tap4j.plugin.TapPublisher>
+  <hudson.plugins.bruceschneier.CordellWalkerRecorder>
+    <factGenerator/>
+  </hudson.plugins.bruceschneier.CordellWalkerRecorder>
+  <hudson.plugins.chucknorris.CordellWalkerRecorder>
+    <factGenerator/>
+  </hudson.plugins.chucknorris.CordellWalkerRecorder>
+  </publishers>
+  <buildWrappers/>
+</project>
