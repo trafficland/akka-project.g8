@@ -1,8 +1,11 @@
 require 'rest_client'
 require 'open-uri'
+require 'java_properties'
 
-user = "$jenkins_user$"
-password = "$jenkins_password$"
+props = JavaProperties::Properties.new("#{Dir.home}/.ivy2/tlcredentials/.jenkinscredentials")
+
+user = props[:user]
+password = props[:password]
 credentials = CGI::escape(user) + ":" + CGI::escape(password)
 jenkins = "http://#{credentials}@build01.tl.com:8080"
 

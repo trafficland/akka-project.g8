@@ -1,25 +1,24 @@
 import sbt._
 import sbt.Keys._
-
+import trafficland.sbt.plugins.TrafficLandStandardPluginSet
+import trafficland.opensource.sbt.plugins._
 
 object Build extends sbt.Build {
   import Dependencies._
 
-  val projectName = "$name$"
-  val buildVersion = "0.1.0-SNAPSHOT"
+  val appName = "$name$"
+  val appVersion = "0.1.0-SNAPSHOT".toReleaseFormat
 
   lazy val UnitTest = config("unit") extend Test
   lazy val runWorker = TaskKey[Unit]("runWorker")
   lazy val runSupervisor = TaskKey[Unit]("runSupervisor")
-  lazy val myProject = Project(projectName, file("."))
+  lazy val myProject = Project(appName, file("."))
     .configs(UnitTest)
+    .settings(TrafficLandStandardPluginSet.plugs :_*)
     .settings(inConfig(UnitTest)(Defaults.testTasks) :_*)
     .settings(commands ++= Seq(dist))
     .settings(
-      organization  := "com.trafficland",
-      version       := buildVersion,
-      scalaVersion  := "2.10.0",
-      scalacOptions := Seq("-deprecation", "-encoding", "utf8"),
+      version       := appVersion,
       resolvers     ++= Dependencies.resolutionRepos,
       libraryDependencies ++= Seq(
         CompileDeps.slf4j,
@@ -36,14 +35,6 @@ object Build extends sbt.Build {
         Tests.Filter { _.contains(".unit.") }
       ),
       parallelExecution in Test := false,
-      credentials += Credentials("Artifactory Realm", "build01.tl.com", "$artifactory_user$", "$artifactory_password$"),
-      publishTo <<= (version) {
-        version: String =>
-          val repo = "http://build01.tl.com:8081/artifactory/"
-          if (version.trim endsWith "SNAPSHOT") Some("TrafficLand Snapshots" at (repo + "com.trafficland.snapshots"))
-          else if (version.trim endsWith "RC") Some("TrafficLand Release Candidates" at (repo + "com.trafficland.releasecandidates"))
-          else Some("TrafficLand Releases" at (repo + "com.trafficland.final"))
-      },
       fullRunTask(runWorker, Runtime, "$name$.Runner"),
       fork in runWorker := true,
       javaOptions in runWorker += "-Dconfig.file=conf/worker.conf",
@@ -54,8 +45,8 @@ object Build extends sbt.Build {
 
   def dist = Command.single("dist") { (state, environment) =>
     val dist = file("./dist")
-    val packageName = "%s-%s".format(projectName, buildVersion)
-    val packageDir = dist / packageName / projectName
+    val packageName = "%s-%s".format(appName, appVersion)
+    val packageDir = dist / packageName / appName
     val zip = dist / (packageName + ".zip")
     IO.delete(dist)
     IO.createDirectories(Seq(packageDir / "conf", packageDir / "lib", packageDir / "logs"))
@@ -72,7 +63,7 @@ object Build extends sbt.Build {
           |classpath="\$scriptdir/lib/*"
           |exec /opt/jdk1.7.0/bin/java \$* -cp "\$classpath" -Dconfig.file="conf/%s.conf" %s.Runner `dirname \$0`
         """.stripMargin.format(
-          cnf, projectName
+          cnf, appName
         )
       )
     }
@@ -93,10 +84,10 @@ object Build extends sbt.Build {
     }
 
 
-    val libs = (packageDir / "lib").listFiles().map(f => f -> "./%s/lib/%s".format(projectName, f.getName))
-    val start = packageDir.listFiles().map(f => f -> "./%s/%s".format(projectName, f.getName))
-    val conf = (packageDir / "conf").listFiles().map(f => f -> "./%s/conf/%s".format(projectName, f.getName))
-    val logs = Seq((packageDir / "logs") -> "./%s/logs/".format(projectName))
+    val libs = (packageDir / "lib").listFiles().map(f => f -> "./%s/lib/%s".format(appName, f.getName))
+    val start = packageDir.listFiles().map(f => f -> "./%s/%s".format(appName, f.getName))
+    val conf = (packageDir / "conf").listFiles().map(f => f -> "./%s/conf/%s".format(appName, f.getName))
+    val logs = Seq((packageDir / "logs") -> "./%s/logs/".format(appName))
 
     IO.zip(libs ++ start ++ conf ++ logs, zip)
     IO.delete(dist / packageName)
@@ -107,7 +98,7 @@ object Build extends sbt.Build {
 
 object Dependencies {
   val resolutionRepos = Seq(
-    "TrafficLand Artifactory Server" at "http://build01.tl.com:8081/artifactory/repo",
+    "TrafficLand Artifactory Server (with default Maven pattern)" at "http://build01.tl.com:8081/artifactory/repo",
     "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
   )
 
