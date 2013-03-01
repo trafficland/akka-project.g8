@@ -89,8 +89,6 @@ object Build extends sbt.Build {
 
 object Dependencies {
   val resolutionRepos = Seq(
-    "TrafficLand Artifactory Server (with default Maven pattern)" at "http://build01.tl.com:8081/artifactory/repo",
-    "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
   )
 
   object Group {
