@@ -20,16 +20,7 @@ object Build extends sbt.Build {
     .settings(
       version       := appVersion,
       resolvers     ++= Dependencies.resolutionRepos,
-      libraryDependencies ++= Seq(
-        CompileDeps.slf4j,
-        CompileDeps.logback,
-        CompileDeps.akkaagent,
-        CompileDeps.akkaremote,
-        TestDeps.mockito,
-        TestDeps.junit,
-        TestDeps.scalatest,
-        TestDeps.akkatest
-      ),
+      libraryDependencies ++= compileDeps ++ testDeps,
       testListeners += SbtTapReporting(),
       testOptions in UnitTest := Seq(
         Tests.Filter { _.contains(".unit.") }
@@ -115,17 +106,18 @@ object Dependencies {
     val junit       = "4.10"
   }
 
-  object CompileDeps {
-    val akkaagent         = Group.akka                  %%  "akka-agent"               % V.akka
-    val akkaremote        = Group.akka                  %%  "akka-remote"              % V.akka
-    val slf4j             = "org.slf4j"                 %   "slf4j-api"                % V.slf4j
-    val logback           = "ch.qos.logback"            %   "logback-classic"          % V.logback
-  }
+  val compileDeps = Seq(
+    Group.akka                  %%  "akka-agent"               % V.akka,
+    Group.akka                  %%  "akka-remote"              % V.akka,
+    "org.slf4j"                 %   "slf4j-api"                % V.slf4j,
+    "ch.qos.logback"            %   "logback-classic"          % V.logback,
+    "com.google.inject"         %   "guice"                    % "3.0",
+  )
 
-  object TestDeps {
-    val junit       = "junit"                     %  "junit"                    % V.junit
-    val mockito     = "org.mockito"               %  "mockito-core"             % V.mockito
-    val akkatest    = Group.akka                  %% "akka-testkit"             % V.akka
-    val scalatest   = "org.scalatest"             %% "scalatest"                % V.scalatest
-  }
+  val testDeps = Seq(
+    "junit"                     %  "junit"                    % V.junit,
+    "org.mockito"               %  "mockito-core"             % V.mockito,
+    Group.akka                  %% "akka-testkit"             % V.akka,
+    "org.scalatest"             %% "scalatest"                % V.scalatest
+  )
 }
