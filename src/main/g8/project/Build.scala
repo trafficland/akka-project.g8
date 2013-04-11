@@ -109,7 +109,7 @@ object Dependencies {
     Group.akka                  %%  "akka-remote"              % V.akka,
     "org.slf4j"                 %   "slf4j-api"                % V.slf4j,
     "ch.qos.logback"            %   "logback-classic"          % V.logback,
-    "com.google.inject"         %   "guice"                    % "3.0",
+    "com.google.inject"         %   "guice"                    % "3.0"
   )
 
   val testDeps = Seq(

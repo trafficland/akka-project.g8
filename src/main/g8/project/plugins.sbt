@@ -11,4 +11,4 @@ addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.1.0")
 
 resolvers += Resolver.url("TrafficLand Artifactory Plugins Server", url("http://build01.tl.com:8081/artifactory/repo"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.trafficland" % "tl-sbt-plugins" % "0.6.9")
+addSbtPlugin("com.trafficland" % "tl-sbt-plugins" % "0.6.11")
