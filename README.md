@@ -1,0 +1,1 @@
+This template will create a new distributed akka project.  Note:  Due to a bug in giter8 0.5.x that corrupts jar files in templates, you will have to manually copy in the appropriate version of sbt launcher.jar.  Unfortunately, giter8 seems to have been abandoned, so this is unlikely to be fixed.
